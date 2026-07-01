@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <!-- Penting: viewport mobile-first supaya tampilan optimal di HP saat scan QR -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warehouse Forms Hub</title>
+  <style>
+
+    /* ── DESIGN TOKENS ──────────────────────────────────────────────
+       Semua warna, font, dan spacing dikontrol dari sini.
+       Ganti nilai di sini untuk ubah tema secara global.
+    ──────────────────────────────────────────────────────────────── */
+    :root {
+      --bg:          #F2F4F6;       /* background halaman */
+      --navy:        #1C2B3A;       /* warna utama header & teks gelap */
+      --amber:       #F59E0B;       /* aksen industrial/safety kuning */
+      --amber-dark:  #D97706;       /* hover state tombol */
+      --white:       #FFFFFF;
+      --text-main:   #1C2B3A;
+      --text-muted:  #6B7280;
+      --border:      #E5E7EB;
+      --shadow:      0 2px 8px rgba(0,0,0,0.08);
+      --radius:      12px;
+    }
+
+    /* ── RESET & BASE ───────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ─────────────────────────────────────────────────── */
+    .header {
+      background: var(--navy);
+      padding: 28px 20px 24px;
+      text-align: center;
+      position: relative;
+      /* Garis aksen amber di bawah header */
+      border-bottom: 4px solid var(--amber);
+    }
+
+    /* Label kecil di atas judul */
+    .header-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 8px;
+    }
+
+    .header h1 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .header p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+    }
+
+    /* ── KONTEN UTAMA ───────────────────────────────────────────── */
+    .content {
+      padding: 20px 16px 32px;
+      max-width: 480px;       /* batas lebar supaya enak dibaca di tablet juga */
+      margin: 0 auto;
+    }
+
+    /* Label section */
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      padding-left: 2px;
+    }
+
+    /* ── CARD FORM ──────────────────────────────────────────────── */
+    /* Setiap form ditampilkan sebagai 1 card */
+    .form-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      padding: 20px;
+      margin-bottom: 14px;
+      /* Subtle transition saat di-tap (di desktop hover) */
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .form-card:active {
+      transform: scale(0.98);   /* efek "press" saat di-tap di HP */
+    }
+
+    /* Header card: nomor urut + nama form */
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    /* Nomor urut form — pakai warna amber supaya mencolok */
+    .card-number {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      background: var(--amber);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--navy);
+      line-height: 1;
+    }
+
+    .card-info { flex: 1; }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.3;
+      margin-bottom: 3px;
+    }
+
+    .card-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Tombol buka form — besar supaya mudah di-tap */
+    .btn-form {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: var(--navy);
+      color: var(--white);
+      text-align: center;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 8px;
+      letter-spacing: 0.3px;
+      transition: background 0.15s ease;
+      /* Penting: min-height 48px untuk aksesibilitas touch target */
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-form:hover  { background: #2d4157; }
+    .btn-form:active { background: #0f1d29; }
+
+    /* Icon panah di dalam tombol */
+    .btn-icon {
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    /* ── STATUS BADGE ───────────────────────────────────────────── */
+    /* Badge kecil di pojok kanan atas card — misal "Harian" / "Bulanan" */
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: rgba(245, 158, 11, 0.12);   /* amber transparan */
+      color: var(--amber-dark);
+      margin-bottom: 6px;
+    }
+
+    /* ── DIVIDER TIPIS ──────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 4px 0 14px;
+    }
+
+    /* ── FOOTER ─────────────────────────────────────────────────── */
+    .footer {
+      text-align: center;
+      padding: 0 20px 28px;
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    .footer strong { color: var(--text-main); }
+
+    /* ── RESPONSIVE: TABLET ke atas ────────────────────────────── */
+    @media (min-width: 540px) {
+      .header h1  { font-size: 26px; }
+      .content    { padding: 28px 24px 40px; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════ HEADER ══════════════════════════ -->
+  <div class="header">
+    <div class="header-eyebrow">Warehouse · Departemen Gudang</div>
+    <h1>Form Hub</h1>
+    <p>Scan → pilih form → langsung isi</p>
+  </div>
+
+  <!-- ═══════════════════════ KONTEN ══════════════════════════ -->
+  <div class="content">
+
+    <div class="section-label">Form Operasional Harian</div>
+
+    <!-- ── CARD 1: Form Cek Stok Harian ── -->
+    <div class="form-card">
+      <div class="card-header">
+        <div class="card-number">1</div>
+        <div class="card-info">
+          <!-- Ganti teks badge sesuai frekuensi form -->
+          <div class="badge">Harian</div>
+          <div class="card-title">Form Cek Stok Harian</div>
+          <div class="card-desc">Pengecekan kondisi dan jumlah stok barang di area penyimpanan setiap hari.</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <!--
+        !! GANTI href="#" dengan URL Google Form yang asli !!
+        Contoh: href="https://forms.gle/xxxxx"
+      -->
+      <a href="#" class="btn-form" target="_blank" rel="noopener">
+        Buka Form <span class="btn-icon">→</span>
+      </a>
+    </div>
+
+    <!-- ── CARD 2: Form Pergantian Kartu Stok ── -->
+    <div class="form-card">
+      <div class="card-header">
+        <div class="card-number">2</div>
+        <div class="card-info">
+          <div class="badge">Kondisional</div>
+          <div class="card-title">Form Pergantian Kartu Stok</div>
+          <div class="card-desc">Diisi saat kartu stok barang perlu diganti atau diperbarui karena rusak/penuh.</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <!--
+        !! GANTI href="#" dengan URL Google Form yang asli !!
+      -->
+      <a href="#" class="btn-form" target="_blank" rel="noopener">
+        Buka Form <span class="btn-icon">→</span>
+      </a>
+    </div>
+
+    <!-- ── CARD 3: Form Stok Opname ── -->
+    <div class="form-card">
+      <div class="card-header">
+        <div class="card-number">3</div>
+        <div class="card-info">
+          <div class="badge">Periodik</div>
+          <div class="card-title">Form Stok Opname</div>
+          <div class="card-desc">Penghitungan fisik stok secara menyeluruh untuk rekonsiliasi data sistem vs aktual.</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <!--
+        !! GANTI href="#" dengan URL Google Form yang asli !!
+      -->
+      <a href="#" class="btn-form" target="_blank" rel="noopener">
+        Buka Form <span class="btn-icon">→</span>
+      </a>
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- ═══════════════════════ FOOTER ══════════════════════════ -->
+  <div class="footer">
+    <strong>Departemen Warehouse</strong><br>
+    Ada kendala? Hubungi Supervisor atau Kepala Gudang.
+  </div>
+
+</body>
+</html>
